@@ -1,3 +1,11 @@
+---
+title: Ascii Art Pruebas
+date: 2026-08-22
+modified: 2026-08-22
+description: Probando movidas
+enableToc: false
+tags:
+---
 Hola que tal!
 
 <div id="kepos-container" style="text-align: center; margin: 2rem 0;">
