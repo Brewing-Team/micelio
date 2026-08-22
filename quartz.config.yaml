@@ -168,6 +168,8 @@ plugins:
     enabled: true
   - source: "@quartz-community/tag-page"
     enabled: true
+  - source: "./plugins/author-page"
+    enabled: true
   - source: "@quartz-community/explorer"
     enabled: true
     layout:
@@ -206,6 +208,11 @@ plugins:
     layout:
       position: beforeBody
       priority: 30
+  - source: "./plugins/author-list"
+    enabled: true
+    layout:
+      position: beforeBody
+      priority: 22
   - source: "@quartz-community/page-title"
     enabled: true
     layout:
@@ -310,6 +317,12 @@ layout:
     tag:
       exclude:
         - reader-mode
+      positions:
+        right: []
+    author:
+      exclude:
+        - reader-mode
+        - author-list
       positions:
         right: []
     canvas: {}

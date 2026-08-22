@@ -1,0 +1,30 @@
+{
+  "name": "author-list",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Renders the note's `authors` frontmatter as clickable pills linking to each author's profile page.",
+  "exports": {
+    ".": "./index.js",
+    "./components": "./components/index.js"
+  },
+  "quartz": {
+    "name": "author-list",
+    "displayName": "Author List",
+    "category": [
+      "component"
+    ],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "defaultOrder": 50,
+    "defaultEnabled": true,
+    "defaultOptions": {},
+    "components": {
+      "AuthorList": {
+        "displayName": "Author List",
+        "defaultPosition": "beforeBody",
+        "defaultPriority": 22
+      }
+    }
+  }
+}
