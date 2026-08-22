@@ -72,3 +72,11 @@ export function getAuthorPhoto(profileFile, currentSlug) {
     null
   )
 }
+
+/** Normalizes the `links` frontmatter field (string or array of strings) into a string array. */
+export function getAuthorLinks(frontmatter) {
+  const raw = frontmatter?.links
+  if (!raw) return []
+  const arr = Array.isArray(raw) ? raw : [raw]
+  return arr.map((l) => String(l).trim()).filter(Boolean)
+}

@@ -14,6 +14,7 @@ import {
   authorSlug,
   photoSrcFromFrontmatter,
   findFirstImage,
+  getAuthorLinks,
 } from "../author-shared/authors.js"
 
 function isListed(file) {
@@ -62,6 +63,33 @@ function resolveAvatar(fileData, tree, currentSlug) {
   return extractLeadingImage(tree)
 }
 
+function linkLabel(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "")
+  } catch {
+    return url
+  }
+}
+
+function AuthorLinks({ links }) {
+  if (!links.length) return null
+  return h(
+    "ul",
+    { class: "author-links" },
+    links.map((link) =>
+      h(
+        "li",
+        { class: "author-link", key: link },
+        h(
+          "a",
+          { class: "external", href: link, target: "_blank", rel: "noopener noreferrer" },
+          linkLabel(link),
+        ),
+      ),
+    ),
+  )
+}
+
 function Avatar({ name, photoSrc }) {
   if (photoSrc) {
     return h("img", { class: "author-avatar", src: photoSrc, alt: name })
@@ -100,6 +128,7 @@ function AuthorProfile({ fileData, tree, currentSlug }) {
   const description = fileData?.frontmatter?.description
   const { src: photoSrc, bioTree } = resolveAvatar(fileData, tree, currentSlug)
   const bio = hasChildren(bioTree) ? htmlToJsx(bioTree) : description
+  const links = getAuthorLinks(fileData?.frontmatter)
 
   return h(
     "div",
@@ -110,6 +139,7 @@ function AuthorProfile({ fileData, tree, currentSlug }) {
       { class: "author-profile-text" },
       h("h1", { class: "author-name" }, name),
       bio && h("div", { class: "author-bio" }, bio),
+      h(AuthorLinks, { links }),
     ),
   )
 }
@@ -258,6 +288,17 @@ const AuthorContent = () => {
 }
 .author-bio {
   color: var(--darkgray);
+}
+ul.author-links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+.author-link a {
+  font-size: 0.85rem;
 }
 .author-notes-count {
   color: var(--gray);
