@@ -13,8 +13,8 @@
 }
 
 :root {
-  --titleFont: "Departure Mono", "Space Mono", monospace;
-  --headerFont: "Departure Mono", "Space Mono", monospace;
+  --titleFont: "Departure Mono", monospace;
+  --headerFont: "Departure Mono", monospace;
 }
 
 // Left sidebar explorer (folder/file nav items)
@@ -25,7 +25,9 @@
 
 // Tags (inline tag chips, tag list, tags inside note properties)
 a.internal.tag-link {
-  font-family: var(--headerFont);
+  font-family: var(--codeFont);
+  border-radius: 12px;
+  padding: 3px 10px;
 }
 
 // Note properties block (title, keys, values, tags, numbers)
@@ -33,11 +35,6 @@ a.internal.tag-link {
   font-family: var(--headerFont);
 }
 .note-properties .note-properties-number {
-  font-family: var(--headerFont);
-}
-
-// Creation date and reading time
-.content-meta {
   font-family: var(--headerFont);
 }
 
@@ -51,14 +48,14 @@ a.internal.tag-link {
   font-family: var(--headerFont);
 }
 
-// Backlinks content
-.backlinks {
+// Backlinks panel label
+.backlinks h3 {
   font-family: var(--headerFont);
 }
 
 // Recent notes date
 .recent-notes .section > .meta {
-  font-family: var(--headerFont);
+  font-family: var(--codeFont);
 }
 
 // Landing page centered, scoped to the index page only

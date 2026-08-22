@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
 configuration:
-  pageTitle: Kêpos
+  pageTitle: Micelio
   pageTitleSuffix: ""
   enableSPA: true
   enablePopovers: true
@@ -22,8 +22,8 @@ configuration:
       header:
         name: Space Mono
         weights: [400]
-      body: Source Sans Pro
-      code: IBM Plex Mono
+      body: JetBrains Mono
+      code: JetBrains Mono
     colors:
       lightMode:
         light: "#faf8f8"
@@ -119,6 +119,8 @@ plugins:
       fontOrigin: local
       title: "Departure Mono"
       header: "Departure Mono"
+      body: "JetBrains Mono"
+      code: "JetBrains Mono"
   - source: "@quartz-themes/core"
     enabled: false
     options:
