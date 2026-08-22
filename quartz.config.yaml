@@ -7,7 +7,7 @@ configuration:
   analytics:
     provider: plausible
   locale: en-US
-  baseUrl: brewing-team.github.io/garden
+  baseUrl: brewing-team.github.io/micelio
   ignorePatterns:
     - private
     - templates
