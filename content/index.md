@@ -1,18 +1,23 @@
 ---
 title: Micelio
 date: 2026-08-19
-modified: 2026-08-19
+modified: 2026-08-22
 description: Porque la vida no nos mantiene lo suficientemente ocupados como para tener que escribir un puto blog.
 enableToc: false
+tags:
+  - landing
 ---
 ```
-   \|/
-    |
-  __|__
- /     \
- \_____/
+ o     o     o
+  \    |    /
+   \   |   /
+o---\--+--/---o
+     \ | /
+      \|/
+ o-----+-----o
+      /|\
+     / | \
+    o  o  o
 ```
 
-#aqui #van #tags #gora #eta
-
----
+Porque la vida no nos mantiene lo suficientemente ocupados como para tener que escribir un puto blog.
