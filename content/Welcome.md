@@ -4,18 +4,21 @@ description: Nota para verificar que todas las features de Obsidian se renderiza
 tags:
   - prueba
   - meta
+authors:
+  - "[[mdoradom]]"
 draft: false
 aliases:
   - Test de features
   - Nota de testing
 ---
+
 # Nota de prueba de features
 
 Esta nota sirve para comprobar visualmente cómo se renderiza cada elemento de Markdown/Obsidian una vez publicado en Quartz. Bórrala o pásala a `draft: true` cuando termines de ajustar el tema.
 
 ## Texto básico
 
-Un párrafo normal con **negrita**, *cursiva*, ~~tachado~~ y `código inline`. También un [enlace externo](https://quartz.jzhao.xyz) y un [[index|enlace interno con alias]].
+Un párrafo normal con **negrita**, _cursiva_, ~~tachado~~ y `código inline`. También un [enlace externo](https://quartz.jzhao.xyz) y un [[index|enlace interno con alias]].
 
 > Esto es una cita simple (blockquote).
 
@@ -48,28 +51,31 @@ Transclusión de un bloque específico:
 ## Listas
 
 ### Lista simple
+
 - Elemento uno
 - Elemento dos
   - Sub-elemento
 - Elemento tres
 
 ### Lista numerada
+
 1. Primer paso
 2. Segundo paso
 3. Tercer paso
 
 ### Checklist
+
 - [x] Tarea completada
 - [ ] Tarea pendiente
 
 ## Tabla
 
-| Feature | Estado | Notas |
-|---|---|---|
-| Wikilinks | ✅ | Funciona con alias |
-| Callouts | ✅ | Ver tipos arriba |
-| Mermaid | 🔄 | Probar abajo |
-| LaTeX | 🔄 | Probar abajo |
+| Feature   | Estado | Notas              |
+| --------- | ------ | ------------------ |
+| Wikilinks | ✅     | Funciona con alias |
+| Callouts  | ✅     | Ver tipos arriba   |
+| Mermaid   | 🔄     | Probar abajo       |
+| LaTeX     | 🔄     | Probar abajo       |
 
 ## Código
 
@@ -79,10 +85,10 @@ Bloque de código con syntax highlighting:
 
 ```javascript
 function saludo(nombre) {
-  return `Hola, ${nombre}!`;
+  return `Hola, ${nombre}!`
 }
 
-console.log(saludo("equipo"));
+console.log(saludo("equipo"))
 ```
 
 ```python
@@ -119,6 +125,7 @@ graph TD
 Esta frase tiene una nota al pie[^1] y otra más[^2].
 
 [^1]: Primera nota al pie con una explicación breve.
+
 [^2]: Segunda nota al pie, con **formato** dentro.
 
 ## Tags inline
@@ -128,12 +135,15 @@ Esta nota también prueba tags inline: #prueba #meta/testing
 ## Encabezados anidados (para probar la tabla de contenidos)
 
 ### Sub-sección A
+
 Contenido de la sub-sección A.
 
 ### Sub-sección B
+
 Contenido de la sub-sección B.
 
 #### Sub-sub-sección B.1
+
 Contenido más anidado, para ver hasta qué nivel muestra la TOC.
 
 ---
