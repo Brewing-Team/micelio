@@ -3,63 +3,25 @@ import {
   resolveRelative,
   simplifySlug,
   joinSegments,
-  slugTag,
-  slugifyFilePath,
   htmlToJsx,
   getDate,
   byDateAndAlphabetical,
   formatDate,
 } from "@quartz-community/utils"
-
-const AUTHORS_ROOT = "authors"
+import {
+  AUTHORS_ROOT,
+  getAuthorRefs,
+  authorSlug,
+  photoSrcFromFrontmatter,
+  findFirstImage,
+} from "../author-shared/authors.js"
 
 function isListed(file) {
   return file?.unlisted !== true
 }
 
-// Matches an Obsidian wikilink: [[Target]], [[Target#anchor]], [[Target|Alias]]
-const WIKILINK_RE = /^\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]$/
-
-/** Unwraps `[[Target]]`, `[[Target#anchor]]` or `[[Target|Alias]]` into `{ target, alias }`. */
-function parseWikilink(raw) {
-  const s = String(raw).trim()
-  const m = s.match(WIKILINK_RE)
-  if (m) return { target: m[1].trim(), alias: m[2]?.trim() }
-  return { target: s, alias: undefined }
-}
-
-/** Turns a raw `authors:` list entry into `{ name, display }`, unwrapping `[[wikilinks]]`. */
-function parseAuthorRef(raw) {
-  const { target, alias } = parseWikilink(raw)
-  return { name: target, display: alias ?? target }
-}
-
-/**
- * Resolves an author's `photo` frontmatter (e.g. `photo: "[[mdoradom.jpg]]"`) to a
- * URL usable from `currentSlug`. The image is expected to live alongside the
- * author's profile note under authors/. Absolute URLs and already-resolved
- * paths are passed through unchanged.
- */
-function photoSrcFromFrontmatter(photoRaw, currentSlug) {
-  if (!photoRaw) return null
-  const raw = String(photoRaw).trim()
-  if (!raw) return null
-  if (/^([a-z]+:)?\/\//i.test(raw) || /^\.{0,2}\//.test(raw)) return raw
-  const { target } = parseWikilink(raw)
-  if (!target) return null
-  return resolveRelative(currentSlug, joinSegments(AUTHORS_ROOT, slugifyFilePath(target)))
-}
-
-/** Normalizes the `authors` frontmatter field (string, wikilink, or array of either) into `{name, display}[]`. */
-function getAuthorRefs(file) {
-  const raw = file?.frontmatter?.authors
-  if (!raw) return []
-  const arr = Array.isArray(raw) ? raw : [raw]
-  return arr.map((a) => parseAuthorRef(a)).filter((ref) => ref.name.length > 0)
-}
-
-function authorSlug(name) {
-  return slugTag(name.trim())
+function hasChildren(tree) {
+  return (tree?.children?.length ?? 0) > 0
 }
 
 function initials(name) {
@@ -73,19 +35,6 @@ function initials(name) {
   )
 }
 
-/** Finds the first `<img>` anywhere under a hast node. */
-function findFirstImage(node) {
-  if (!node) return null
-  if (node.type === "element" && node.tagName === "img") return node
-  if (node.children) {
-    for (const child of node.children) {
-      const found = findFirstImage(child)
-      if (found) return found
-    }
-  }
-  return null
-}
-
 /**
  * Splits a profile note's rendered body into an avatar photo (the first embedded
  * image, e.g. `![[photo.jpg]]`) and the remaining bio content. If the leading
@@ -94,7 +43,6 @@ function findFirstImage(node) {
  */
 function extractLeadingImage(tree) {
   const children = tree?.children ?? []
-  if (children.length === 0) return { src: null, bioTree: tree }
   const first = children[0]
   const img = findFirstImage(first)
   if (img?.properties?.src) {
@@ -151,8 +99,7 @@ function AuthorProfile({ fileData, tree, currentSlug }) {
   const name = fileData?.frontmatter?.title ?? currentSlug
   const description = fileData?.frontmatter?.description
   const { src: photoSrc, bioTree } = resolveAvatar(fileData, tree, currentSlug)
-  const hasBody = bioTree?.children?.length > 0
-  const bio = hasBody ? htmlToJsx(bioTree) : description
+  const bio = hasChildren(bioTree) ? htmlToJsx(bioTree) : description
 
   return h(
     "div",
@@ -190,6 +137,38 @@ function AuthorIndex({ authors, currentSlug, locale }) {
   )
 }
 
+const authorMentionsCache = new WeakMap()
+
+/**
+ * Indexes every listed file's `authors:` mentions once per build (memoized per
+ * `allFiles` array): mention counts for the author index, and each author's
+ * notes for their individual page, both keyed by author slug.
+ */
+function getAuthorMentions(allFiles) {
+  const files = allFiles ?? []
+  let mentions = authorMentionsCache.get(files)
+  if (!mentions) {
+    const counts = new Map()
+    const notesByAuthor = new Map()
+    for (const file of files.filter(isListed)) {
+      const slugsInFile = new Set()
+      for (const { name } of getAuthorRefs(file?.frontmatter)) {
+        const s = authorSlug(name)
+        if (!counts.has(s)) counts.set(s, { slug: joinSegments(AUTHORS_ROOT, s), name, count: 0 })
+        counts.get(s).count += 1
+        if (!notesByAuthor.has(s)) notesByAuthor.set(s, [])
+        if (!slugsInFile.has(s)) {
+          notesByAuthor.get(s).push(file)
+          slugsInFile.add(s)
+        }
+      }
+    }
+    mentions = { counts, notesByAuthor }
+    authorMentionsCache.set(files, mentions)
+  }
+  return mentions
+}
+
 const AuthorContent = () => {
   const AuthorContentBody = (props) => {
     const { fileData, tree, allFiles, cfg } = props
@@ -200,19 +179,13 @@ const AuthorContent = () => {
     const locale = cfg?.locale ?? "en-US"
     const currentSlug = slug
     const key = simplifySlug(slug.slice(AUTHORS_ROOT.length))
-    const listed = (allFiles ?? []).filter(isListed)
+    const { counts, notesByAuthor } = getAuthorMentions(allFiles)
 
     if (key === "/") {
       // Index of every author: anyone mentioned in `authors:` frontmatter,
       // plus anyone who merely has a profile note under authors/.
-      const bySlug = new Map()
-      for (const file of listed) {
-        for (const { name } of getAuthorRefs(file)) {
-          const s = authorSlug(name)
-          if (!bySlug.has(s)) bySlug.set(s, { slug: joinSegments(AUTHORS_ROOT, s), name, count: 0 })
-          bySlug.get(s).count += 1
-        }
-      }
+      const bySlug = new Map([...counts].map(([s, entry]) => [s, { ...entry }]))
+      const listed = (allFiles ?? []).filter(isListed)
       for (const file of listed) {
         if (!file.slug?.startsWith(`${AUTHORS_ROOT}/`)) continue
         if (file.slug === currentSlug || file.slug.endsWith("/index")) continue
@@ -229,8 +202,7 @@ const AuthorContent = () => {
         bySlug.set(s, merged)
       }
       const authors = [...bySlug.values()].sort((a, b) => a.name.localeCompare(b.name))
-      const hasBody = tree && tree.children && tree.children.length > 0
-      const intro = hasBody ? htmlToJsx(tree) : fileData?.description
+      const intro = hasChildren(tree) ? htmlToJsx(tree) : fileData?.description
       return h(
         Fragment,
         null,
@@ -240,9 +212,7 @@ const AuthorContent = () => {
       )
     }
 
-    const notes = listed.filter((file) =>
-      getAuthorRefs(file).some((ref) => authorSlug(ref.name) === key),
-    )
+    const notes = notesByAuthor.get(key) ?? []
     return h(
       "div",
       { class: "author-page" },
@@ -347,13 +317,10 @@ function AuthorPage() {
       const allFiles = content.map((c) => c[1].data).filter(isListed)
 
       const existingSlugs = new Set()
-      for (const file of allFiles) {
-        if (authorMatcher({ slug: file.slug ?? "" })) existingSlugs.add(file.slug)
-      }
-
       const authorsBySlug = new Map()
       for (const file of allFiles) {
-        for (const { name, display } of getAuthorRefs(file)) {
+        if (authorMatcher({ slug: file.slug ?? "" })) existingSlugs.add(file.slug)
+        for (const { name, display } of getAuthorRefs(file?.frontmatter)) {
           const s = authorSlug(name)
           if (s && !authorsBySlug.has(s)) authorsBySlug.set(s, display)
         }

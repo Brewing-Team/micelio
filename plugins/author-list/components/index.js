@@ -1,69 +1,26 @@
 import { h } from "preact"
+import { resolveRelative, joinSegments, classNames } from "@quartz-community/utils"
 import {
-  resolveRelative,
-  slugTag,
-  joinSegments,
-  slugifyFilePath,
-  classNames,
-} from "@quartz-community/utils"
+  AUTHORS_ROOT,
+  getAuthorRefs,
+  authorSlug,
+  getAuthorPhoto,
+} from "../../author-shared/authors.js"
 
-const AUTHORS_ROOT = "authors"
+const profileIndexCache = new WeakMap()
 
-// Matches an Obsidian wikilink: [[Target]], [[Target#anchor]], [[Target|Alias]]
-const WIKILINK_RE = /^\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|([^\]]+))?\]\]$/
-
-/** Unwraps `[[Target]]`, `[[Target#anchor]]` or `[[Target|Alias]]` into `{ target, alias }`. */
-function parseWikilink(raw) {
-  const s = String(raw).trim()
-  const m = s.match(WIKILINK_RE)
-  if (m) return { target: m[1].trim(), alias: m[2]?.trim() }
-  return { target: s, alias: undefined }
-}
-
-/** Turns a raw `authors:` list entry into `{ name, display }`, unwrapping `[[wikilinks]]`. */
-function parseAuthorRef(raw) {
-  const { target, alias } = parseWikilink(raw)
-  return { name: target, display: alias ?? target }
-}
-
-function getAuthorRefs(frontmatter) {
-  const raw = frontmatter?.authors
-  if (!raw) return []
-  const arr = Array.isArray(raw) ? raw : [raw]
-  return arr.map((a) => parseAuthorRef(a)).filter((ref) => ref.name.length > 0)
-}
-
-/** Resolves an author's `photo` frontmatter (e.g. `[[mdoradom.jpg]]`) to a URL. */
-function photoSrcFromFrontmatter(photoRaw, currentSlug) {
-  if (!photoRaw) return null
-  const raw = String(photoRaw).trim()
-  if (!raw) return null
-  if (/^([a-z]+:)?\/\//i.test(raw) || /^\.{0,2}\//.test(raw)) return raw
-  const { target } = parseWikilink(raw)
-  if (!target) return null
-  return resolveRelative(currentSlug, joinSegments(AUTHORS_ROOT, slugifyFilePath(target)))
-}
-
-/** Finds the first `<img>` anywhere under a hast node. */
-function findFirstImage(node) {
-  if (!node) return null
-  if (node.type === "element" && node.tagName === "img") return node
-  if (node.children) {
-    for (const child of node.children) {
-      const found = findFirstImage(child)
-      if (found) return found
+/** Maps every authors/-prefixed file by slug, memoized per `allFiles` array for the build. */
+function getProfileIndex(allFiles) {
+  const files = allFiles ?? []
+  let index = profileIndexCache.get(files)
+  if (!index) {
+    index = new Map()
+    for (const file of files) {
+      if (file.slug?.startsWith(`${AUTHORS_ROOT}/`)) index.set(file.slug, file)
     }
+    profileIndexCache.set(files, index)
   }
-  return null
-}
-
-function getAuthorPhoto(profileFile, currentSlug) {
-  if (!profileFile) return null
-  return (
-    photoSrcFromFrontmatter(profileFile.frontmatter?.photo, currentSlug) ??
-    findFirstImage(profileFile.htmlAst)?.properties?.src ??
-    null
-  )
+  return index
 }
 
 const AuthorListComponent = () => {
@@ -71,12 +28,13 @@ const AuthorListComponent = () => {
     const authors = getAuthorRefs(fileData?.frontmatter)
     if (authors.length === 0) return null
     const currentSlug = fileData.slug
+    const profileIndex = getProfileIndex(allFiles)
     return h(
       "ul",
       { class: classNames(displayClass, "authors") },
       authors.map(({ name, display }) => {
-        const profileSlug = joinSegments(AUTHORS_ROOT, slugTag(name))
-        const profileFile = (allFiles ?? []).find((f) => f.slug === profileSlug)
+        const profileSlug = joinSegments(AUTHORS_ROOT, authorSlug(name))
+        const profileFile = profileIndex.get(profileSlug)
         const photoSrc = getAuthorPhoto(profileFile, currentSlug)
         return h(
           "li",
