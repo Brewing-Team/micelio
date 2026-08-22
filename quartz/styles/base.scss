@@ -498,6 +498,17 @@ pre {
     border: none;
   }
 
+  // Plain fenced blocks with no language (e.g. ASCII art) aren't "code" —
+  // drop the code-block chrome (border/padding/copy button) for them.
+  &:not([data-language]):not(:has(> code.mermaid)) {
+    border: none;
+    padding: 0;
+
+    & > .clipboard-button {
+      display: none;
+    }
+  }
+
   & > code {
     background: none;
     padding: 0;
