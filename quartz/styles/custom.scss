@@ -87,3 +87,24 @@ body[data-slug="index"] {
     }
   }
 }
+
+/* Hide metadata and properties exclusively on the landing page */
+.page[data-slug="index"], article[data-slug="index"] {
+  
+  /* Hides the default Quartz metadata (date, reading time) */
+  .content-meta {
+    display: none;
+  }
+
+  /* Hides the tags list */
+  ul.tags, .tags {
+    display: none;
+  }
+
+  /* Hides the Properties table/panel if you use the Frontmatter or NoteProperties plugins */
+  .frontmatter,
+  .note-properties,
+  .metadata-property {
+    display: none;
+  }
+}

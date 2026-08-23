@@ -104,6 +104,8 @@ export default (() => {
             return resource
           }
         })}
+
+        <script src="/static/micelio-bg.js"></script>
       </head>
     )
   }

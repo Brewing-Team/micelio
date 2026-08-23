@@ -7,17 +7,12 @@ enableToc: false
 tags:
   - landing
 ---
-```
- o     o     o
-  \    |    /
-   \   |   /
-o---\--+--/---o
-     \ | /
-      \|/
- o-----+-----o
-      /|\
-     / | \
-    o  o  o
-```
+
+# MICELIO
+_Del lat. cient. mycelium, y este der. del gr. μύκης mýkēs 'hongo', quizá con infl. de epithelium 'epitelio'._
+
+_m. Bot. Talo de los hongos, formado comúnmente de filamentos muy ramificados y que constituye el aparato de nutrición de estos seres vivos._
+
+---
 
 Porque la vida no nos mantiene lo suficientemente ocupados como para tener que escribir un puto blog.
