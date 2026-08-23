@@ -170,6 +170,9 @@ plugins:
     enabled: true
   - source: "./plugins/author-page"
     enabled: true
+  - source: "./plugins/micelio-bg"
+    enabled: true
+    order: 5
   - source: "@quartz-community/explorer"
     enabled: true
     layout:

@@ -1,0 +1,52 @@
+{
+  "name": "micelio-bg",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Injects the micelio animated background script into pages.",
+  "exports": {
+    ".": "./index.js"
+  },
+  "quartz": {
+    "name": "micelio-bg",
+    "displayName": "Micelio Background",
+    "category": ["emitter"],
+    "version": "1.0.0",
+    "quartzVersion": ">=5.0.0",
+    "defaultOrder": 50,
+    "defaultEnabled": true,
+    "defaultOptions": {
+      "scalePixels": 5,
+      "opacity": 0.4,
+      "threadThickness": 3,
+      "nodeSize": 2,
+      "initialRoots": 12,
+      "maxBranches": 25,
+      "branchProbability": 0.02,
+      "curvature": 0.3,
+      "speed": 0.6,
+      "baseLife": 300,
+      "extraRandomLife": 200,
+      "infiniteRebirth": false,
+      "stepsPerFrame": 1
+    },
+    "configSchema": {
+      "type": "object",
+      "properties": {
+        "scalePixels": { "type": "number" },
+        "opacity": { "type": "number" },
+        "threadThickness": { "type": "number" },
+        "nodeSize": { "type": "number" },
+        "initialRoots": { "type": "number" },
+        "maxBranches": { "type": "number" },
+        "branchProbability": { "type": "number" },
+        "curvature": { "type": "number" },
+        "speed": { "type": "number" },
+        "baseLife": { "type": "number" },
+        "extraRandomLife": { "type": "number" },
+        "infiniteRebirth": { "type": "boolean" },
+        "stepsPerFrame": { "type": "number" }
+      }
+    }
+  }
+}
