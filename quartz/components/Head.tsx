@@ -105,7 +105,7 @@ export default (() => {
           }
         })}
 
-        <script src="/static/micelio-bg.js"></script>
+        <script src={joinSegments(baseDir, "static/micelio-bg.js")}></script>
       </head>
     )
   }
