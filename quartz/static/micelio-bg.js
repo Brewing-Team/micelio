@@ -5,16 +5,16 @@
   // =========================================================
   const CONFIG = {
     // Apariencia general
-    escalaPixels: 4,          // Nivel de pixelado (menor = más HD, mayor = más retro)
-    opacidad: 0.3,            // Transparencia del fondo (0.1 a 1.0)
-    grosorHilo: 2,            // Grosor del aura dithered (las líneas)
+    escalaPixels: 5,          // Nivel de pixelado (menor = más HD, mayor = más retro)
+    opacidad: 0.4,            // Transparencia del fondo (0.1 a 1.0)
+    grosorHilo: 3,            // Grosor del aura dithered (las líneas)
     tamanoNodo: 2,            // Tamaño del punto brillante al dividirse
     
     // Comportamiento de crecimiento
     raicesIniciales: 12,       // Cuántas ramas nacen al cargar la página
     maxRamasSimultaneas: 25,  // Límite de ramas vivas para no saturar la pantalla
-    probabilidadRama: 0.01,   // Probabilidad de dividirse en 2 (0.01 a 0.05 es ideal)
-    curvatura: 0.1,           // Cuánto zigzaguea orgánicamente (0.1 recto -> 1.0 muy caótico)
+    probabilidadRama: 0.02,   // Probabilidad de dividirse en 2 (0.01 a 0.05 es ideal)
+    curvatura: 0.3,           // Cuánto zigzaguea orgánicamente (0.1 recto -> 1.0 muy caótico)
     velocidad: 0.6,           // Velocidad de avance de las puntas
     
     // Duración y ciclo de vida
