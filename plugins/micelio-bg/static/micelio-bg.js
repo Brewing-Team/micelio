@@ -25,11 +25,30 @@
     // Special modes
     infiniteRebirth: false, // true = when all die, spawn new; false = stop
     stepsPerFrame: 1, // raise for faster initial growth
+    // Mobile behavior
+    disableOnMobile: true, // when true, the effect is disabled on phones
   };
 
   const CONFIG = (typeof window !== 'undefined' && window.MICELIO_BG_CONFIG)
     ? { ...DEFAULT_CONFIG, ...window.MICELIO_BG_CONFIG }
     : DEFAULT_CONFIG
+
+  function isMobileDevice() {
+    if (typeof window === 'undefined') return false;
+    try {
+      if (window.matchMedia && window.matchMedia('(max-width: 800px)').matches) return true;
+      if ('ontouchstart' in window) return true;
+      if (navigator && /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) return true;
+    } catch (e) {
+      return false;
+    }
+    return false;
+  }
+
+  if (CONFIG.disableOnMobile && isMobileDevice()) {
+    // Abort early on mobile devices to save CPU/battery and avoid layout issues.
+    return;
+  }
 
   // Inject dynamic CSS using the configured opacity
   const style = document.createElement('style');
