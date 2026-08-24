@@ -263,11 +263,20 @@
   // Initialize and events
   document.addEventListener('DOMContentLoaded', init);
 
+  // Keep canvas in DOM during SPA navigation, reinitialize if removed
   document.addEventListener('nav', () => {
-    if (!document.getElementById('micelio-bg') && canvas) {
+    if (!document.getElementById('micelio-bg')) {
+      // Canvas was removed, need to reinitialize
+      init();
+    } else if (canvas && !document.body.contains(canvas)) {
+      // Canvas exists but not in DOM, reattach and reinitialize dimensions
       document.body.prepend(canvas);
+      ctx = canvas.getContext('2d');
+      width = Math.floor(window.innerWidth / SCALE);
+      height = Math.floor(window.innerHeight / SCALE);
+      canvas.width = width;
+      canvas.height = height;
     }
-    if (hyphae.length === 0) init();
   });
 
   new MutationObserver(updateColors).observe(document.documentElement, { attributes: true, attributeFilter: ['saved-theme', 'theme'] });
