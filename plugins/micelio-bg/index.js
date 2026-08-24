@@ -5,17 +5,21 @@ import path from "path"
 import { fileURLToPath } from "url"
 
 export default function MicelioBg(opts) {
-  const optsProvided = opts ?? {}
+  // Only create config if user provided options
+  const hasUserOptions = opts && Object.keys(opts).length > 0
+  const optsProvided = hasUserOptions ? opts : null
 
   return {
     name: "micelio-bg",
     externalResources: () => ({
       additionalHead: [
-        // Inline config so the client script can pick up runtime options
-        () => {
-          const cfg = JSON.stringify(optsProvided)
-          return h("script", { dangerouslySetInnerHTML: { __html: `window.MICELIO_BG_CONFIG = ${cfg};` } })
-        },
+        // Inline config only if user provided options
+        ...(optsProvided ? [
+          () => {
+            const cfg = JSON.stringify(optsProvided)
+            return h("script", { dangerouslySetInnerHTML: { __html: `window.MICELIO_BG_CONFIG = ${cfg};` } })
+          }
+        ] : []),
         (fileData) => {
           const baseDir = fileData?.slug === "404" ? "/" : pathToRoot(fileData?.slug || "")
           return h("script", { src: joinSegments(baseDir, "static/micelio-bg.js") })

@@ -172,6 +172,9 @@ plugins:
     enabled: true
   - source: "./plugins/micelio-bg"
     enabled: true
+    options:
+      opacity: 0.05
+      threadThickness: 3
     order: 5
   - source: "@quartz-community/explorer"
     enabled: true
