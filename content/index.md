@@ -16,6 +16,9 @@ _m. Bot. Talo de los hongos, formado comúnmente de filamentos muy ramificados y
 
 Porque la vida no nos mantiene lo suficientemente ocupados como para tener que escribir un puto blog.
 
+---
+### Recent Notes
+
 > [!attention] Proof of concept, los filtros estan mal puestos y aqui sale de todo
 
 ![[Recent Notes Base.base]]
