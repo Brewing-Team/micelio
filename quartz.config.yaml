@@ -199,6 +199,7 @@ plugins:
     layout:
       position: right
       priority: 50
+      condition: not-index
   - source: "@quartz-community/article-title"
     enabled: true
     layout:
@@ -264,6 +265,7 @@ plugins:
     layout:
       position: right
       priority: 60
+      condition: not-index
   - source: "@quartz-community/spacer"
     enabled: true
     options: {}
