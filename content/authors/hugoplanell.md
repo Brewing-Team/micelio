@@ -3,7 +3,7 @@ title: hugoplanell
 description: Ah
 photo: "[[hugoplanell.jpg]]"
 tags:
-  - prueba
+  - author
 links:
   - https://hugoplanell.github.io/hugoplanell
   - https://github.com/hugoplanell

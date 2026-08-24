@@ -3,7 +3,7 @@ title: mdoradom
 description: Normalmente escribo código, a veces otras cosas.
 photo: "[[mdoradom.jpg]]"
 tags:
-  - prueba
+  - author
 links:
   - https://mdoradom.com/
   - https://github.com/mdoradom

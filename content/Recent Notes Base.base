@@ -1,0 +1,26 @@
+formulas:
+  creado: date(file.ctime).format("DD MMM, YYYY")
+  creado-custom: date(file.ctime).format("DD MMM, YYYY")
+properties:
+  formula.creado-custom:
+    displayName: creado
+views:
+  - type: cards
+    name: Vista
+    filters:
+      not:
+        - file.tags == ["author"]
+        - file.ext == "base"
+        - file.name == "index"
+        - title == "Micelio"
+        - photo == ""
+    order:
+      - file.name
+      - file.tags
+      - formula.creado-custom
+    sort:
+      - property: file.ctime
+        direction: ASC
+    limit: 4
+    cardSize: 400
+    imageAspectRatio: 1
